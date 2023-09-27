@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Posts</h1>
+
+<ul>
+{% for post in object_list %}
+    <li><a href="{% url 'post-detail' post.pk %}"
+    >{{ post.title }} </a> - {{ post.author}} 
+    {% if user.is_authenticated and user.id == post.author.id%}
+        - <small><a href="{% url 'update_post' post.pk %}">(Edit)</a>
+        <a href="{% url 'delete_post' post.pk %}">(Delete)</a></small>
+        <br/>
+    {% endif %}
+    {% if post.body|length > 150 %}
+        {{ post.body|slice:":150"}}...
+    {% else %}
+        {{ post.body }}
+    {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

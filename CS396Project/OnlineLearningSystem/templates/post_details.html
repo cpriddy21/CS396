@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %} {{post.title}} {% endblock %}
+
+{% block content %}
+
+current user: {{user.id}}
+post author: {{post.author.id}}
+
+<h1>{{post.title}}</h1>
+<small>By: {{post.author}} 
+{% if user.is_authenticated %}
+    {% if user.id == post.author.id %}
+    - <small><a href="{% url 'update_post' post.pk %}">(Edit)</a>
+    <a href="{% url 'delete_post' post.pk %}">(Delete)</a></small>
+    <br/>
+    {% endif %}
+{% endif %}
+
+<hr>
+
+{% if post.image %}
+<br/>
+<img src="{{post.image.url}}" style="max-width: 400px; max-height: 300px;">
+<br/>
+{% endif %}
+
+{% if post.video %}
+<br/>
+<video src="{{post.video.url}}" style="max-width: 400px; max-height: 300px;" controls></video>
+<br/>
+{% endif %}
+
+
+{{ post.body }}
+<br/><br/>
+<a href="{% url 'home' %}"><button class="btn btn-secondary">Back</button></a>
+
+{% endblock %}
+
