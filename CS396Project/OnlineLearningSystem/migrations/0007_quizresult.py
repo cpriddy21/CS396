@@ -8,7 +8,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        #migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ('OnlineLearningSystem', '0006_alter_practicequiz_question_count'),
     ]
 
