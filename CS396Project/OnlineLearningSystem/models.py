@@ -1,7 +1,6 @@
 from django.db import models
 #from django.contrib.auth.models import User
-from django.contrib.auth import get_user_model
-User = get_user_model()
+from django.conf import settings
 from Users.models import User
 from django.urls import reverse
 from datetime import datetime, date
@@ -11,7 +10,7 @@ from datetime import datetime, date
 class Post(models.Model):
     title = models.CharField(max_length=255)
     #title_tag = models.CharField(max_length=255, default="Title")
-    author = models.ForeignKey(User,on_delete=models.CASCADE)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
     body = models.TextField()#RichTextField(blank=True, null=True)
     image = models.ImageField(null = True, blank = True, upload_to="images/")
     video = models.FileField(null=True, blank=True, upload_to="videos/")
@@ -23,6 +22,11 @@ class Post(models.Model):
     def get_absolute_url(self):
        return reverse("home")
        #return reverse("post-detail", args=(str(self.pk)))
+    class Meta:
+        app_label = 'OnlineLearningSystem'
+        db_table = 'OnlineLearningSystem_post'
+
+    
 
 class PracticeQuiz(models.Model):
     title = models.CharField(max_length=100)
@@ -45,7 +49,7 @@ class Choice(models.Model):
         return str(self.question) + ' | ' + self.text
 
 class QuizResult(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     quiz = models.ForeignKey(PracticeQuiz, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     selected_choice = models.ForeignKey(Choice, on_delete=models.CASCADE)

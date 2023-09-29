@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import User#, 
+from django.contrib.auth.admin import UserAdmin
 from .models import User,Student, Teacher
 
 # Register your models here.

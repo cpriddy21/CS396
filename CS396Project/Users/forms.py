@@ -24,7 +24,7 @@ class StudentSignUpForm(UserCreationForm):
         user.is_student = True
         if commit:
             user.save()
-        student = Student.objects.create(user=user, first_name=self.cleaned_data.get('first_name'), last_name=self.cleaned_data.get('last_name'), batch=self.cleaned_data.get('batch'), roll_no=self.cleaned_data.get('roll_no'))
+        student = Student.objects.create(user=user, first_name=self.cleaned_data.get('first_name'), last_name=self.cleaned_data.get('last_name'))
         return user
     
 class TeacherSignUpForm(UserCreationForm):
@@ -34,7 +34,7 @@ class TeacherSignUpForm(UserCreationForm):
 
     first_name = forms.CharField(widget=forms.TextInput())
     last_name = forms.CharField(widget=forms.TextInput())
-    subject = forms.CharField(widget=forms.TextInput())
+    #subject = forms.CharField(widget=forms.TextInput())
 
     class Meta(UserCreationForm.Meta):
         model = User
@@ -46,7 +46,7 @@ class TeacherSignUpForm(UserCreationForm):
         user.is_teacher = True
         if commit:
             user.save()
-        teacher = Teacher.objects.create(user=user, first_name=self.cleaned_data.get('first_name'), last_name=self.cleaned_data.get('last_name'), subject=self.cleaned_data.get('subject'))
+        teacher = Teacher.objects.create(user=user, first_name=self.cleaned_data.get('first_name'), last_name=self.cleaned_data.get('last_name'))
         return user
     
 class LoginForm(AuthenticationForm):
