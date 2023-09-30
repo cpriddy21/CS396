@@ -1,6 +1,6 @@
 #from django.shortcuts import render
 from django.views import generic
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, PasswordResetForm
 from django.urls import reverse_lazy
 from django.shortcuts import redirect, render
 from django.views.generic import CreateView
@@ -66,4 +66,11 @@ class LoginView(auth_views.LoginView):
                 return reverse('home')
         else:
             return reverse('login')
-        
+
+class PasswordResetView(auth_views.PasswordResetView):
+    form_class = PasswordResetForm
+    template_name = 'registration/password_reset.html'
+
+class PasswordResetDoneView(auth_views.PasswordResetDoneView):
+    #form_class = PasswordResetDoneForm
+    template_name = 'registration/password_reset_done.html'     

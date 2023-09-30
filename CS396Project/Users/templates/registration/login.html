@@ -13,8 +13,11 @@
     
 </div>
 
-<p>Not yet registered!</p>
+<small> <p>Not yet registered?</p>
     <a href="{% url 'student-signup' %}">Signup as Student</a><br>
     <a href="{% url 'teacher-signup' %}">Signup as Teacher</a>
-
+    <br/><br/>
+    <p>Forgot your password?</p>
+    <a href="{% url 'password_reset' %}">Reset Password</a><br>
+</small>
 {% endblock %}

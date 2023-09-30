@@ -4,6 +4,7 @@ from django.conf import settings
 from Users.models import User
 from django.urls import reverse
 from datetime import datetime, date
+from django.utils import timezone
 #from ckeditor.fields import RichTextField
 # Create your models here.
 
@@ -14,7 +15,7 @@ class Post(models.Model):
     body = models.TextField()#RichTextField(blank=True, null=True)
     image = models.ImageField(null = True, blank = True, upload_to="images/")
     video = models.FileField(null=True, blank=True, upload_to="videos/")
-
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.title + ' | ' + str(self.author)
@@ -26,6 +27,13 @@ class Post(models.Model):
         app_label = 'OnlineLearningSystem'
         db_table = 'OnlineLearningSystem_post'
 
+class Reply(models.Model):
+    post = models.ForeignKey(Post,on_delete=models.CASCADE)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+    body = models.TextField()#RichTextField(blank=True, null=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    def __str__(self):
+        return self.title + ' | ' + str(self.author)
     
 
 class PracticeQuiz(models.Model):

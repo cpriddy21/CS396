@@ -1,0 +1,10 @@
+.dark-background {
+    background-color: #211f21; 
+    color: #eae9ed; 
+  }
+
+  .custom-card {
+    background-color: #181616; /* Set your desired background color */
+    color: #eae9ed; /* Set your desired text color */
+    /* Add any other styles you need */
+}
