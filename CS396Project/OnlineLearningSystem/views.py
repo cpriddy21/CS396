@@ -1,9 +1,11 @@
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Post, PracticeQuiz, Question, Choice, QuizResult
-from .forms import PostForm
+from .models import Post, Reply, PracticeQuiz, Question, Choice, QuizResult
+from .forms import PostForm, ReplyForm
 from django.urls import reverse_lazy
 from .forms import PostForm, UpdatePostForm
+from django.urls import reverse
+from django.shortcuts import redirect
 
 # Create your views here.
 #def home(request):
@@ -64,6 +66,34 @@ class HomeView(ListView):
 class PostDetailView(DetailView):
     model = Post
     template_name = 'post_details.html'
+    slug_field = 'slug'
+
+    form = ReplyForm
+    def post(self, request, *args, **kwargs):
+        form = ReplyForm(request.POST) 
+        if form.is_valid():
+            post = self.get_object()
+            if request.user.is_authenticated:
+                # Set the author of the reply to the authenticated user
+                post = self.get_object()
+                form.instance.author = request.user
+                form.instance.post = post
+                #form.save(user=self.request.user)
+                form.save()
+                #return redirect(reverse("post-detail", kwargs={'pk': post.pk}))
+                return redirect(reverse("post-detail", kwargs={'slug': post.slug}))
+            else:
+                return redirect('login')
+    def get_context_data(self, **kwargs):
+        post_replies_count = Reply.objects.all().filter(post=self.object.id).count()
+        post_replies = Reply.objects.all().filter(post=self.object.id)
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'form': self.form(),  # Pass user here
+            'post_replies': post_replies,
+            'post_replies_count': post_replies_count,
+        })
+        return context
 
 
 class CreatePostView(CreateView):
@@ -87,4 +117,5 @@ class QuizListView(ListView):
     model = PracticeQuiz 
     template_name = 'quiz_list.html'
     ordering = ['-id']   
+
 

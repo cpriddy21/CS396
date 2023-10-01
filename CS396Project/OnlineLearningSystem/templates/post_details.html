@@ -4,8 +4,7 @@
 
 {% block content %}
 
-current user: {{user.id}}
-post author: {{post.author.id}}
+
 
 <h1>{{post.title}}</h1>
 <small>By: {{post.author}} 
@@ -33,6 +32,41 @@ post author: {{post.author.id}}
 
 
 {{ post.body }}
+
+
+<br/><br/>
+<!--Replies-->
+<div class="section ">
+    <div class="container ">
+        <h4>Replies({{post_replies_count}})</h4>
+        <div class="row ">
+            <div class="col-lg-8 mx-auto ">
+                <!--display reply-->
+                <div class="media-list">
+                    {% for reply in post_replies %}
+                    <div>
+                        <div class="media-body">
+                            <div class="small-1">
+                                <b> {{reply.author}}</b>
+                                <time class="ml-4 opaciy-70 small-3"> {{reply.created_at}}</time>
+                            </div>
+                            <p> {{reply.body}}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <!--display the form-->
+                <form method="POST" action="{% url 'post-detail' slug=post.slug %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        {{form}}
+                    </div> 
+                    <button class="btn btn-primary btn-block " type="submit">Reply</button>   
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 <br/><br/>
 <a href="{% url 'home' %}"><button class="btn btn-secondary">Back</button></a>
 

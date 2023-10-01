@@ -5,17 +5,19 @@ from Users.models import User
 from django.urls import reverse
 from datetime import datetime, date
 from django.utils import timezone
+from autoslug import AutoSlugField
 #from ckeditor.fields import RichTextField
 # Create your models here.
 
 class Post(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, unique=True)
+    slug = AutoSlugField(populate_from='title')
     #title_tag = models.CharField(max_length=255, default="Title")
     author = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
     body = models.TextField()#RichTextField(blank=True, null=True)
     image = models.ImageField(null = True, blank = True, upload_to="images/")
     video = models.FileField(null=True, blank=True, upload_to="videos/")
-    created_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title + ' | ' + str(self.author)
@@ -31,13 +33,13 @@ class Reply(models.Model):
     post = models.ForeignKey(Post,on_delete=models.CASCADE)
     author = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
     body = models.TextField()#RichTextField(blank=True, null=True)
-    created_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
-        return self.title + ' | ' + str(self.author)
+        return self.post.title + ' reply | ' + str(self.author)
     
 
 class PracticeQuiz(models.Model):
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, unique=True)
     question_count = models.PositiveIntegerField(default=0)
     description = models.CharField(max_length=1000, default='')
     def __str__(self):

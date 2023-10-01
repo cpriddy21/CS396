@@ -12,7 +12,7 @@
 
 <div class="card custom-card">
     <div class="card-body">
-      <a href="{% url 'post-detail' post.pk %}">{{ post.title }} </a> - {{ post.created_at }} 
+      <a href="{% url 'post-detail' post.slug %}">{{ post.title }} </a> - {{ post.created_at }} 
     
     {% if user.is_authenticated and user.id == post.author.id or user.is_teacher%}
         {% if user.is_authenticated and user.id == post.author.id %}
