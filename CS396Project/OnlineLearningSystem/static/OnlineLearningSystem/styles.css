@@ -8,3 +8,16 @@
     color: #eae9ed; /* Set your desired text color */
     /* Add any other styles you need */
 }
+
+#success-banner {
+  background-color: #4CAF50; /* Green background color */
+  color: white; /* Text color */
+  padding: 10px; /* Padding around the text */
+  text-align: center; /* Center the text horizontally */
+  position: fixed; /* Fixed position to stay at the top */
+  top: 0; /* Position at the top of the viewport */
+  left: 0; /* Position at the left side of the viewport */
+  right: 0; /* Position at the right side of the viewport */
+  z-index: 1000; /* Ensure it's above other elements */
+  display: none; /* Initially hidden */
+}

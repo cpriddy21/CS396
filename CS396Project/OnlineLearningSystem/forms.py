@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post, Reply
+from .models import Post, Reply, QuizResult, Choice
 
 class PostForm(forms.ModelForm):
     class Meta: 
@@ -26,35 +26,30 @@ class UpdatePostForm(forms.ModelForm):
             
         }
 
+
 class ReplyForm(forms.ModelForm):
 
-    content = forms.CharField(widget=forms.Textarea(attrs={
+    body = forms.CharField(widget=forms.Textarea(attrs={
         'class': 'md-textarea form-control',
         'placeholder': 'comment here ...',
         'rows': '4',
     }))
     class Meta:
         model = Reply
-        fields = ('content', )
-
-    # content = forms.CharField(widget=forms.Textarea(attrs={
-    #     'class': 'md-textarea form-control',
-    #     'placeholder': 'comment here ...',
-    #     'rows':'4',
-    # }))
-    # class Meta: 
-    #     model = Reply
-    #     fields = ('content',)
+        fields = ('body', )
 
     def form_valid(self, form):
         form.instance.author = self.request.user  # Assign the author here
         form.instance.post = self.post  # Assuming you have a 'post' attribute in your view
         return super().form_valid(form)
     
-    # def save(self, commit=True):
-    #     instance = super().save(commit=False)
-    #     instance.author = self.user  # Assuming you have 'self.user' set in your view
-    #     instance.post = self.post  # Assuming you have 'self.post' set in your view
-    #     if commit:
-    #         instance.save()
-    #     return instance
+class QuizAnswerForm(forms.ModelForm):
+    class Meta:
+        model = QuizResult
+        fields = ['selected_choice'] 
+    selected_choice = forms.ModelChoiceField(
+        queryset=Choice.objects.all(),
+        required=True,  # Set to True if it should be required
+        widget=forms.RadioSelect,
+    )
+   

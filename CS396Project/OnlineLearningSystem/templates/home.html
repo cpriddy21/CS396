@@ -5,6 +5,26 @@
 
 {% block content %}
 
+<div id="new-posts-banner">
+    {{ new_posts_banner }}
+</div>
+
+<script>
+    // Show the banner when the page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        var banner = document.querySelector('#success-banner');
+        if (banner) {
+            banner.style.display = 'block';
+            // Hide the banner after 3 seconds (adjust the time as needed)
+            setTimeout(function() {
+                banner.style.display = 'none';
+            }, 3000);
+        }
+    });
+</script>
+
+
+
 <h1>Posts</h1>
 
 

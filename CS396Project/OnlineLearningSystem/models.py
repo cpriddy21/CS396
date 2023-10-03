@@ -30,7 +30,7 @@ class Post(models.Model):
         db_table = 'OnlineLearningSystem_post'
 
 class Reply(models.Model):
-    post = models.ForeignKey(Post,on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, related_name="replies", on_delete=models.CASCADE)
     author = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
     body = models.TextField()#RichTextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -46,17 +46,22 @@ class PracticeQuiz(models.Model):
         return self.title 
 
 class Question(models.Model):
-    quiz = models.ForeignKey(PracticeQuiz, on_delete=models.CASCADE)
+    quiz = models.ForeignKey(PracticeQuiz, related_name="questions", on_delete=models.CASCADE)
     question_text = models.CharField(max_length=500)
     def __str__(self):
         return str(self.quiz) + ' | ' + self.question_text
 
 class Choice(models.Model):
-    question=models.ForeignKey(Question, on_delete=models.CASCADE)
+    question=models.ForeignKey(Question, related_name="choices", on_delete=models.CASCADE)
     text = models.CharField(max_length=100)
     is_correct = models.BooleanField(default=False)
     def __str__(self):
         return str(self.question) + ' | ' + self.text
+    class Meta:
+        unique_together = [
+            # no duplicated choice per question
+            ("question", "text")
+        ]
 
 class QuizResult(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -64,7 +69,7 @@ class QuizResult(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     selected_choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
     score = models.IntegerField()
-
+    
     def __str__(self):
-        return {self.user.username} + '\'s result for' + {self.quiz.title}
+        return f"{self.user.username}'s result for {self.quiz.title}"
 
