@@ -60,5 +60,5 @@ Practice Exercises: Students can practice with exercises, and their results are 
 Discussion Forum: Users can create and participate in discussion posts, upload files, and interact with others.
 User-Friendly Interface: The web interface is designed to be intuitive and user-friendly.
 
-Contributors
+Contributors: 
 Cassandra Priddy
