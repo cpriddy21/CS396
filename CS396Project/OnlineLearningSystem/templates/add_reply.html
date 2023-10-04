@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %} Create Post Reply {% endblock %}
+
+{% block content %}
+
+</br>
+{% if user.is_authenticated %}
+    <h1>Create Post Reply...</h1>
+    </br></br></br>
+    <div class="form-group">
+        <form method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input type="hidden" name="post" value="{{ post.slug }}">  <!-- Hidden post field with the post's slug -->
+                    <button class="btn btn-secondary" type="submit">Post Reply</button>
+                </form>
+            </div>
+{% else %}
+    Authentification Failed: Login Required
+{% endif %}
+
+
+
+{% endblock %}

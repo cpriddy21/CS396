@@ -27,6 +27,7 @@ def quiz_results_view(request):
             'quiz': quiz,
             'results': results
         })
+    
 
     return render(request, 'quiz_results.html', {'quiz_results': quiz_results})
 

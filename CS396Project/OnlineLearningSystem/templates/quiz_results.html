@@ -2,7 +2,6 @@
 
 {% block content %}
   <h1>Quiz Results</h1>
-
   <table>
     <thead>
       <tr>
@@ -14,11 +13,21 @@
     <tbody>
       {% for result in quiz_results %}
         {% for quiz_result in result.results %}
-          <tr>
-            <td>{{ result.quiz.title }}</td>
-            <td>{{ quiz_result.user.username }}</td>
-            <td>{{ quiz_result.score }}</td>
-          </tr>
+          {% if user.is_teacher %}
+            <!-- Display all scores for teachers -->
+            <tr>
+              <td>{{ result.quiz.title }}</td>
+              <td>{{ quiz_result.user.username }}</td>
+              <td>{{ quiz_result.score }}</td>
+            </tr>
+          {% elif user.is_student and user == quiz_result.user %}
+            <!-- Display only the signed-in student's scores -->
+            <tr>
+              <td>{{ result.quiz.title }}</td>
+              <td>{{ quiz_result.user.username }}</td>
+              <td>{{ quiz_result.score }}</td>
+            </tr>
+          {% endif %}
         {% endfor %}
       {% endfor %}
     </tbody>
