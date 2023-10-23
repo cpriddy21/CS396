@@ -3,6 +3,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from .models import Post, Reply, PracticeQuiz, Question, Choice, QuizResult
 from .forms import PostForm, ReplyForm, UpdatePostForm, QuizAnswerForm
 from django.urls import reverse_lazy
+from django.db.models import Sum
 from django.urls import reverse
 from django.shortcuts import redirect
 from django.utils import timezone
@@ -16,20 +17,35 @@ from datetime import datetime, timedelta
 #    return render(request, 'home.html', {})
 
 def quiz_results_view(request):
-    # Query all quizzes and their associated results
-    quizzes = PracticeQuiz.objects.all()
-    quiz_results = []
+    # Query all quiz results
+    quiz_results = QuizResult.objects.all()
 
-    # Loop through each quiz and get the results for each user
-    for quiz in quizzes:
-        results = QuizResult.objects.filter(quiz=quiz)
-        quiz_results.append({
-            'quiz': quiz,
-            'results': results
-        })
-    
+    # Create a dictionary to store grouped results
+    grouped_results = {}
 
-    return render(request, 'quiz_results.html', {'quiz_results': quiz_results})
+    for result in quiz_results:
+        key = (result.user.username, result.quiz.title)
+        if key not in grouped_results:
+            grouped_results[key] = {
+                'user': result.user,
+                'quiz_title': result.quiz.title,
+                'total_score': 0,  # Initialize total score
+                'total_results': 0,  # Initialize total number of results
+            }
+        grouped_results[key]['total_score'] += result.score
+        grouped_results[key]['total_results'] += 1
+
+    # Calculate the percentage score for each group
+    for key, group in grouped_results.items():
+        total_score = group['total_score']
+        total_results = group['total_results']
+        if total_results > 0:
+            group['percentage_score'] = round((total_score / total_results) * 100)
+
+    # Convert the dictionary values to a list
+    grouped_results_list = grouped_results.values()
+
+    return render(request, 'quiz_results.html', {'grouped_results': grouped_results_list})
 
 # def ActiveQuizView(request, quiz_pk):
 #     if request.method == 'POST':
@@ -183,6 +199,10 @@ class CreatePostView(CreateView):
     model = Post
     form_class = PostForm
     template_name = "add_post.html"
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
     #fields = '__all__'
 
 

@@ -1,34 +1,47 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
+<head>
+  <style>
+      table {
+          width: 100%; /* Make the table expand to the full width of its container */
+      }
+      
+      th, td {
+          text-align: center; /* Center-align content within table cells */
+          padding: 8px; /* Add some padding for spacing */
+      }
+  </style>
+</head>
+
   <h1>Quiz Results</h1>
+</br></br>
   <table>
     <thead>
       <tr>
         <th>Quiz</th>
         <th>User</th>
-        <th>Score</th>
+        <th>Percentage Score</th>
       </tr>
     </thead>
     <tbody>
-      {% for result in quiz_results %}
-        {% for quiz_result in result.results %}
-          {% if user.is_teacher %}
-            <!-- Display all scores for teachers -->
+      {% for result in grouped_results %}
+        {% if user.is_teacher %}
+          <tr>
+            <td>{{ result.quiz_title }}</td>
+            <td>{{ result.user.username }}</td>
+            <td>{{ result.percentage_score }}%</td>
+          </tr>
+        {% else %}
+          {% if result.user == user %}
             <tr>
-              <td>{{ result.quiz.title }}</td>
-              <td>{{ quiz_result.user.username }}</td>
-              <td>{{ quiz_result.score }}</td>
-            </tr>
-          {% elif user.is_student and user == quiz_result.user %}
-            <!-- Display only the signed-in student's scores -->
-            <tr>
-              <td>{{ result.quiz.title }}</td>
-              <td>{{ quiz_result.user.username }}</td>
-              <td>{{ quiz_result.score }}</td>
+              <td>{{ result.quiz_title }}</td>
+              <td>{{ result.user.username }}</td>
+              <td>{{ result.percentage_score }}%</td>
             </tr>
           {% endif %}
-        {% endfor %}
+        {% endif %}
       {% endfor %}
     </tbody>
   </table>

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
-
+{% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'OnlineLearningSystem/styles.css' %}">
 {% block title %} {{post.title}} {% endblock %}
 
 {% block content %}
@@ -17,23 +18,22 @@
 {% endif %}
 
 <hr>
+<div style="text-align: center;">
+    {% if post.image %}
+    <img src="{{post.image.url}}" style="max-width: 400px; max-height: 300px;">
+    {% endif %}
+    {% if post.video %}
+</br>
+    <video src="{{post.video.url}}" style="max-width: 400px; max-height: 300px;" controls></video>
 
-{% if post.image %}
+    {% endif %}
+</div>
 <br/>
-<img src="{{post.image.url}}" style="max-width: 400px; max-height: 300px;">
-<br/>
-{% endif %}
-
-{% if post.video %}
-<br/>
-<video src="{{post.video.url}}" style="max-width: 400px; max-height: 300px;" controls></video>
-<br/>
-{% endif %}
-
-
-{{ post.body }}
-
-
+<div class="card custom-card">
+    <div class="card-body">
+        {{ post.body }}
+    </div>
+</div>
 <br/><br/>
 <!--Replies-->
 <div class="section ">
@@ -44,15 +44,21 @@
                 <!--display reply-->
                 <div class="media-list">
                     {% for reply in post_replies %}
-                    <div>
-                        <div class="media-body">
-                            <div class="small-1">
-                                <b> {{reply.author}}</b>
-                                <time class="ml-4 opaciy-70 small-3"> {{reply.created_at}}</time>
+                    <div class="card custom-card">
+                        <div class="card-body">
+                            <div>
+                                <div class="media-body">
+                                    <div class="small-1">
+                                        <b> {{reply.author}}</b>
+                                        <time class="ml-4 opaciy-70 small-3"> {{reply.created_at}}</time>
+                                    </div>
+                                    <p> {{reply.body}}</p>
+                                    
+                                </div>
                             </div>
-                            <p> {{reply.body}}</p>
                         </div>
                     </div>
+                </br>
                     {% endfor %}
                 </div>
                 <!--display the form-->
