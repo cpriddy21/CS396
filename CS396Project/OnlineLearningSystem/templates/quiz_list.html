@@ -2,10 +2,29 @@
 
 {% block content %}
 
-<h1>Exercises</h1>
 
 
-{% for quiz in object_list %}
+<table style="width: 100%; border-collapse: collapse;">
+    <th style="text-align: center;"><h1>Exercises</h1></th>
+    <tr>
+        <td style="width: 10%; vertical-align: top; text-align: left;">
+
+            <ul>
+                <ul><a href="#section1">Section 1</a></ul>
+                <ul><a href="#section2">Section 2</a></ul>
+                <ul><a href="#section3">Section 3</a></ul>
+            </ul>
+        </td>
+        <td style="width: 10%;">
+        </td>
+        <td style="width: 80%; padding-left: 20px;">
+            <div id="section1">
+                <h4>Section 1</h4>
+                <p>This is the content of Section 1.</p>
+            </div>
+    </tr>
+</table>
+<!-- {% for quiz in object_list %}
     <ol><a href="{% url 'quiz' quiz.pk %}">{{ quiz.title }} </a> - {{ quiz.question_count}} Questions
     {% if user.is_authenticated and user.id == post.author.id%}
         
@@ -16,7 +35,7 @@
         {{ quiz.description }}
     {% endif %}
     </ol>
-    {% endfor %}
+    {% endfor %} -->
 
 
 {% endblock %}

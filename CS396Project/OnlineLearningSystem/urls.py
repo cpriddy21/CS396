@@ -14,4 +14,5 @@ urlpatterns = [
     path('Quiz/<int:quiz_pk>', QuizView, name='quiz'),
     path('pdf_viewer/', views.pdf_viewer, name='pdf_viewer'),
     path('quiz_results/', views.quiz_results_view, name='quiz_results'),
+    path('search/', views.search_results_view, name='search_results'),   
 ]

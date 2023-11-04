@@ -3,7 +3,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from .models import Post, Reply, PracticeQuiz, Question, Choice, QuizResult
 from .forms import PostForm, ReplyForm, UpdatePostForm, QuizAnswerForm
 from django.urls import reverse_lazy
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.urls import reverse
 from django.shortcuts import redirect
 from django.utils import timezone
@@ -15,6 +15,19 @@ from datetime import datetime, timedelta
 
 #def home(request):
 #    return render(request, 'home.html', {})
+def search_results_view(request):
+    if request.method == "POST":
+        searched = request.POST['searched']
+        posts = Post.objects.filter(
+            Q(body__contains=searched) |
+            Q(title__contains=searched) |
+            Q(author__username__contains=searched) |
+            Q(created_at__contains=searched)
+        )
+        return render(request, 'search_results.html', {'searched':searched, 'posts':posts})
+        
+    else:
+        return render(request, 'search_results.html', {})
 
 def quiz_results_view(request):
     # Query all quiz results
@@ -224,3 +237,5 @@ class QuizListView(ListView):
 
 def pdf_viewer(request):
     return render(request, 'pdf_viewer.html')
+
+
