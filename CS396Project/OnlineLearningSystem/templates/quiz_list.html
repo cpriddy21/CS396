@@ -4,7 +4,7 @@
 
 
 
-<table style="width: 100%; border-collapse: collapse;">
+<!-- <table style="width: 100%; border-collapse: collapse;">
     <th style="text-align: center;"><h1>Exercises</h1></th>
     <tr>
         <td style="width: 10%; vertical-align: top; text-align: left;">
@@ -23,19 +23,19 @@
                 <p>This is the content of Section 1.</p>
             </div>
     </tr>
-</table>
-<!-- {% for quiz in object_list %}
-    <ol><a href="{% url 'quiz' quiz.pk %}">{{ quiz.title }} </a> - {{ quiz.question_count}} Questions
-    {% if user.is_authenticated and user.id == post.author.id%}
+</table> -->
+{% for quiz in quizzes %}
+<ol><a href="{% url 'quiz' quiz.pk %}">{{ quiz.title }} </a> - {{ quiz.question_count }} Questions
+    {% if user.is_authenticated and user.is_student %}
         
     {% endif %}
     {% if quiz.description|length > 150 %}
-        {{ quiz.description|slice:":150"}}...
+        {{ quiz.description|slice:":150" }}...
     {% else %}
         {{ quiz.description }}
     {% endif %}
     </ol>
-    {% endfor %} -->
+{% endfor %}
 
 
 {% endblock %}

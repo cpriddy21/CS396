@@ -1,15 +1,33 @@
 <!doctype html>
 <html lang="en">
   {% load static %}
+  {% load course_tags %}
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
-    
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{% static 'OnlineLearningSystem/styles.css' %}">
+    <script>
+      $(document).ready(function() {
+        $('.dropdown-menu a.dropdown-toggle').on('click', function(e) {
+          if (!$(this).next().hasClass('show')) {
+            $(this).parents('.dropdown-menu').first().find('.show').removeClass('show');
+          }
+          var $subMenu = $(this).next('.dropdown-menu');
+          $subMenu.toggleClass('show');
+
+          return false;
+        });
+
+        $('.dropdown, .dropdown-submenu').on('hidden.bs.dropdown', function(e) {
+          $(e.target).find('.show').removeClass('show');
+        });
+      });
+    </script>
+    
+    <!-- Bootstrap CSS -->
+    
     <title>{% block title %}Home{% endblock %}</title>
   </head>
   <body class="dark-background">
@@ -47,9 +65,12 @@
             </a>
             <div class="dropdown-menu">
             <a class="dropdown-item" href="{% url 'pdf_viewer' %}">Readings </a>
-            <a class="dropdown-item" href="{% url 'quiz_list' %}">Practice Quizzes</a>
+            
             <a class="dropdown-item" href="{% url 'quiz_results' %}">Scores</a>
             </div>
+          
+            {% courses_dropdown request.user %}
+          
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{% url 'logout' %}">Logout</a>
@@ -69,6 +90,7 @@
           </li>
           {% endif %}
 
+            
           
         </ul>
       </div>

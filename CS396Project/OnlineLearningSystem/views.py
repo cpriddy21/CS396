@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Post, Reply, PracticeQuiz, Question, Choice, QuizResult
+from .models import Post, Reply, PracticeQuiz, Question, Choice, QuizResult, Course
 from .forms import PostForm, ReplyForm, UpdatePostForm, QuizAnswerForm
 from django.urls import reverse_lazy
 from django.db.models import Sum, Q
@@ -13,8 +13,19 @@ from datetime import datetime, timedelta
 
 # Create your views here.
 
-#def home(request):
-#    return render(request, 'home.html', {})
+# def courses_view(request):
+#     return render(request, 'courses_view.html', {})
+def QuizListView(request, course_id=None):
+    all_courses = Course.objects.all()  # Add this line to fetch all courses
+    # Filter quizzes based on the selected course, if provided
+    if course_id is not None:
+        quizzes = PracticeQuiz.objects.filter(course__id=course_id)
+    else:
+        # If no course is selected, show all quizzes
+        quizzes = PracticeQuiz.objects.all()
+    
+    return render(request, 'quiz_list.html', {'quizzes': quizzes, 'all_courses': all_courses})
+
 def search_results_view(request):
     if request.method == "POST":
         searched = request.POST['searched']
@@ -59,51 +70,6 @@ def quiz_results_view(request):
     grouped_results_list = grouped_results.values()
 
     return render(request, 'quiz_results.html', {'grouped_results': grouped_results_list})
-
-# def ActiveQuizView(request, quiz_pk):
-#     if request.method == 'POST':
-#         quiz = quiz.objects.get(pk=quiz_pk)
-#         questions = Question.objects.filter(quiz=quiz)
-#         total_score = 0
-
-#         for question in questions:
-#             correct = str(question.correct)
-
-    
-
-# def QuizView(request, quiz_pk):
-#     try:
-#         quiz = get_object_or_404(PracticeQuiz, pk=quiz_pk)
-#     except:
-#         return FileNotFoundError
-#     questions = Question.objects.filter(quiz=quiz)
-
-#     if request.method == 'POST':
-#         form = QuizAnswerForm(request.POST)
-#         if form.is_valid():
-#             # Process and save the user's answers
-#             print("Form is valid")
-#             print(form.cleaned_data)
-#             user = request.user
-#             for question in questions:
-#                 selected_choice = form.cleaned_data.get(f'question_{question.id}_selected_choice')
-#                 print(selected_choice)
-#                 QuizResult.objects.create(
-#                     user=user,
-#                     quiz=quiz,
-#                     question=question,
-#                     selected_choice=selected_choice,
-#                     score=(1 if selected_choice.is_correct else 0),  # You can adjust the scoring logic
-#                 )
-#                 print("Form is valid - Quiz submitted successfully")
-#             return redirect('quiz_results')  # Redirect to a page showing quiz results
-#         else:
-#             print("Form is not valid")
-#             print(form.errors) 
-#     else:
-#         form = QuizAnswerForm()
-
-#     return render(request, 'active_quiz.html', {'quiz': quiz, 'questions': questions, 'form': form})
 
 def QuizView(request, quiz_pk):
     try:
@@ -171,10 +137,6 @@ class HomeView(ListView):
 
         return context
 
-
-
-
-
 class PostDetailView(DetailView):
     model = Post
     template_name = 'post_details.html'
@@ -230,10 +192,10 @@ class DeletePostView(DeleteView):
     template_name = 'delete_post.html'
     success_url = reverse_lazy('home')
 
-class QuizListView(ListView):
-    model = PracticeQuiz 
-    template_name = 'quiz_list.html'
-    ordering = ['-id']   
+# class QuizListView(ListView):
+#     model = PracticeQuiz 
+#     template_name = 'quiz_list.html'
+#     ordering = ['-id']   
 
 def pdf_viewer(request):
     return render(request, 'pdf_viewer.html')
