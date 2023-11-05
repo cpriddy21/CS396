@@ -5,18 +5,18 @@
 <h1>Exercises</h1>
 
 
-{% for quiz in object_list %}
-    <ol><a href="{% url 'quiz' quiz.pk %}">{{ quiz.title }} </a> - {{ quiz.question_count}} Questions
-    {% if user.is_authenticated and user.id == post.author.id%}
+{% for quiz in quizzes %}
+<ol><a href="{% url 'quiz' quiz.pk %}">{{ quiz.title }} </a> - {{ quiz.question_count }} Questions
+    {% if user.is_authenticated and user.is_student %}
         
     {% endif %}
     {% if quiz.description|length > 150 %}
-        {{ quiz.description|slice:":150"}}...
+        {{ quiz.description|slice:":150" }}...
     {% else %}
         {{ quiz.description }}
     {% endif %}
     </ol>
-    {% endfor %}
+{% endfor %}
 
 
 {% endblock %}

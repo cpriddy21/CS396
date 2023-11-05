@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
   {% load static %}
+  {% load course_tags %}
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -15,7 +16,20 @@
   <body class="dark-background">
     
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #BF2B0C;">
-      <a class="navbar-brand" href="{% url 'home' %}">Knowledge++</a>
+      
+      <div class="navbar-right">
+        <a class="navbar-brand" href="{% url 'home' %}">Knowledge++</a>
+        {% if request.user.is_authenticated %}
+          <p style="text-align: left; font-size: smaller; margin-top: 0px;margin-bottom: 0px;">
+            Logged in as: <span style="font-weight: bold;">{{ request.user.username }}</span>
+          </p>
+        {% else %}
+          <p style="text-align: left; font-size: smaller; margin-top: 0px;margin-bottom: 0px;">
+          You are not logged in.
+          </p>
+        {% endif %}
+      </div>
+
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -34,10 +48,12 @@
             </a>
             <div class="dropdown-menu">
             <a class="dropdown-item" href="{% url 'pdf_viewer' %}">Readings </a>
-            <a class="dropdown-item" href="{% url 'quiz_list' %}">Practice Quizzes</a>
             <a class="dropdown-item" href="{% url 'quiz_results' %}">Scores</a>
             </div>
           </li>
+          
+          {% courses_dropdown request %}
+
           <li class="nav-item">
             <a class="nav-link" href="{% url 'logout' %}">Logout</a>
           </li>
@@ -58,17 +74,17 @@
 
           
         </ul>
+
       </div>
-      <div class="navbar-right">
-        {% if request.user.is_authenticated %}
-        <li class="nav-item disabled">
-        Logged in as: {{ request.user.username }}
-        </li>
-        {% else %}
-        <p>You are not logged in.</p>
-        {% endif %}
-      </div>
+
+      <form class="d-flex" method=POST action="{% url 'search_results' %}">
+        {% csrf_token %}
+        <input class="form-control me-2" type="search" placeholder="Search Posts" aria-label="Search" name="searched">
+        <button class="btn btn-dark" type="submit">Search</button>
+      </form>
     </nav>
+    
+    
 
 
 

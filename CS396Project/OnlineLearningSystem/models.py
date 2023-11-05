@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 #from django.contrib.auth.models import User
 from django.conf import settings
@@ -37,13 +38,26 @@ class Reply(models.Model):
     def __str__(self):
         return self.post.title + ' reply | ' + str(self.author)
     
+class Course(models.Model):
+    name = models.CharField(max_length=150)
+    subject = models.CharField(max_length=150, null=True, blank=True, default=None)
+    teacher = models.ForeignKey(User, on_delete=models.CASCADE)
+    students = models.ManyToManyField(User,related_name='courses')
+    course_code = models.UUIDField(default=uuid.uuid4, editable=True, unique=True)
+    
 
+    def __str__(self):
+        return self.name
+    
 class PracticeQuiz(models.Model):
     title = models.CharField(max_length=100, unique=True)
     question_count = models.PositiveIntegerField(default=0)
     description = models.CharField(max_length=1000, default='')
+    course = models.ForeignKey(Course, related_name="quizzes", on_delete=models.SET_NULL, null=True, blank=True, default=None)
     def __str__(self):
         return self.title 
+
+
 
 class Question(models.Model):
     quiz = models.ForeignKey(PracticeQuiz, related_name="questions", on_delete=models.CASCADE)
@@ -72,4 +86,4 @@ class QuizResult(models.Model):
     
     def __str__(self):
         return f"{self.user.username}'s result for {self.quiz.title}"
-
+    

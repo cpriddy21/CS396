@@ -1,0 +1,24 @@
+<html>
+  
+    
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+        Courses
+    </a>
+
+    <div class="dropdown-menu">
+        {% for course in all_courses %}
+        <a class="dropdown-item" href="{% url 'quiz_list' course.id %}">{{ course.name }} Quizzes</a>
+        {% endfor %}
+        <!-- {% if request.user.is_student %}
+            {% for course in request.user.courses.all %}
+                <a class="dropdown-item" href="{% url 'quiz_list' course.id %}">{{ course.name }} Quizzes</a>
+            {% endfor %}
+        {% elif request.user.is_teacher %}
+            {% for course in courses %}
+                <a class="dropdown-item" href="{% url 'quiz_list' course.id %}">{{ course.name }} Quizzes</a>
+            {% endfor %}
+        {% endif %} -->
+    </div>
+</li>
+</html>
