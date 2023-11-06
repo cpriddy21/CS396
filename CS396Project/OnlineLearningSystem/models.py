@@ -54,9 +54,17 @@ class PracticeQuiz(models.Model):
     question_count = models.PositiveIntegerField(default=0)
     description = models.CharField(max_length=1000, default='')
     course = models.ForeignKey(Course, related_name="quizzes", on_delete=models.SET_NULL, null=True, blank=True, default=None)
+    attempts = models.PositiveIntegerField(default=3)
     def __str__(self):
         return self.title 
 
+class QuizAttempt(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    quiz = models.ForeignKey('PracticeQuiz', on_delete=models.CASCADE)
+    attempts_left = models.PositiveIntegerField(default=3)
+
+    def __str__(self):
+        return f"{self.user.username}'s attempt for {self.quiz.title}"
 
 
 class Question(models.Model):

@@ -1,6 +1,7 @@
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Post, Reply, PracticeQuiz, Question, Choice, QuizResult, Course
+from .models import Post, Reply, PracticeQuiz, Question, Choice, QuizResult, Course, QuizAttempt
 from .forms import PostForm, ReplyForm, UpdatePostForm, QuizAnswerForm
 from django.urls import reverse_lazy
 from django.db.models import Sum, Q
@@ -16,6 +17,7 @@ from datetime import datetime, timedelta
 # def courses_view(request):
 #     return render(request, 'courses_view.html', {})
 def QuizListView(request, course_id=None):
+    courses = []
     if request.user.is_authenticated and request.user.is_student:
         courses = request.user.courses.all()
         #print("Enrolled courses:", enrolled_courses)
@@ -29,6 +31,23 @@ def QuizListView(request, course_id=None):
         quizzes = PracticeQuiz.objects.all()
     
     return render(request, 'quiz_list.html', {'quizzes': quizzes, 'courses': courses})
+    # if request.user.is_authenticated and request.user.is_student:
+    #     courses = request.user.courses.all()
+    # if request.user.is_authenticated and request.user.is_teacher:
+    #     courses = Course.objects.all()
+    
+    # quizzes = PracticeQuiz.objects.all()  # Fetch all quizzes
+
+    # # Create a dictionary to store attempts_left for each quiz
+    # attempts_left_dict = {}
+    
+    # # Fetch or create QuizAttempt for each quiz and user
+    # for quiz in quizzes:
+    #     if request.user.is_authenticated:
+    #         quiz_attempt, created = QuizAttempt.objects.get_or_create(user=request.user, quiz=quiz)
+    #         attempts_left_dict[quiz.id] = quiz_attempt.attempts_left
+
+    # return render(request, 'quiz_list.html', {'quizzes': quizzes, 'courses': courses, 'attempts_left_dict': attempts_left_dict})
 
 def search_results_view(request):
     if request.method == "POST":
@@ -84,6 +103,11 @@ def QuizView(request, quiz_pk):
 
     if request.method == 'POST':
         # Create a dictionary to store user's answers for each question
+        user = request.user
+        quiz_attempt, created = QuizAttempt.objects.get_or_create(user=user, quiz=quiz)
+        if quiz_attempt.attempts_left <= 0:
+            return HttpResponse("You have no attempts left for this quiz.")
+        
         user_answers = {}
 
         for question in questions:
@@ -112,6 +136,8 @@ def QuizView(request, quiz_pk):
                     selected_choice=selected_choice,
                     score=(1 if selected_choice.is_correct else 0),  # You can adjust the scoring logic
                 )
+            quiz_attempt.attempts_left -= 1
+            quiz_attempt.save()
             return redirect('quiz_results')  # Redirect to a page showing quiz results
         else:
             # Handle the case where the user didn't answer all questions

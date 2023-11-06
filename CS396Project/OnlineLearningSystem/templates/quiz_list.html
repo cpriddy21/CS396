@@ -6,17 +6,26 @@
 
 
 {% for quiz in quizzes %}
-<ol><a href="{% url 'quiz' quiz.pk %}">{{ quiz.title }} </a> - {{ quiz.question_count }} Questions
+<ol>
+    <a href="{% url 'quiz' quiz.pk %}">{{ quiz.title }} </a> - {{ quiz.question_count }} Questions
+    <br/>
+    <small>
     {% if user.is_authenticated and user.is_student %}
-        
+    
+        {% if attempts_left > 0 %}
+            {{ attempts_left }} attempts left
+        {% else %}
+            {{ attempts_left }} attempts left
+        {% endif %}
     {% endif %}
+    </small>
+    <br/>
     {% if quiz.description|length > 150 %}
         {{ quiz.description|slice:":150" }}...
     {% else %}
         {{ quiz.description }}
     {% endif %}
-    </ol>
+</ol>
 {% endfor %}
-
 
 {% endblock %}
