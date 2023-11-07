@@ -64,35 +64,76 @@ def search_results_view(request):
         return render(request, 'search_results.html', {})
 
 def quiz_results_view(request):
+    # # Query all quiz results
+    # quiz_results = QuizResult.objects.all()
+
+    # # Create a dictionary to store grouped results
+    # grouped_results = {}
+
+    # for result in quiz_results:
+    #     key = (result.user.username, result.quiz.title)
+    #     if key not in grouped_results:
+    #         grouped_results[key] = {
+    #             'user': result.user,
+    #             'quiz_title': result.quiz.title,
+    #             'total_score': 0,  # Initialize total score
+    #             'total_results': 0,  # Initialize total number of results
+    #         }
+    #     grouped_results[key]['total_score'] += result.score
+    #     grouped_results[key]['total_results'] += 1
+
+    # # Calculate the percentage score for each group
+    # for key, group in grouped_results.items():
+    #     total_score = group['total_score']
+    #     total_results = group['total_results']
+    #     if total_results > 0:
+    #         group['percentage_score'] = round((total_score / total_results) * 100)
+
+    # # Convert the dictionary values to a list
+    # grouped_results_list = grouped_results.values()
+
+    # return render(request, 'quiz_results.html', {'grouped_results': grouped_results_list})
+  
     # Query all quiz results
     quiz_results = QuizResult.objects.all()
 
-    # Create a dictionary to store grouped results
-    grouped_results = {}
+    grouped_results = []
 
     for result in quiz_results:
         key = (result.user.username, result.quiz.title)
-        if key not in grouped_results:
-            grouped_results[key] = {
+        found = False
+        for group in grouped_results:
+            if group['user'] == result.user and group['quiz_title'] == result.quiz.title:
+                group['total_score'] += result.score
+                group['total_results'] += 1
+                group['questions'].append({
+                    'question_text': result.question.question_text,
+                    'is_correct': result.selected_choice.is_correct,
+                })
+                found = True
+                break
+
+        if not found:
+            grouped_result = {
                 'user': result.user,
                 'quiz_title': result.quiz.title,
-                'total_score': 0,  # Initialize total score
-                'total_results': 0,  # Initialize total number of results
+                'total_score': result.score,
+                'total_results': 1,
+                'questions': [{
+                    'question_text': result.question.question_text,
+                    'is_correct': result.selected_choice.is_correct,
+                }],
             }
-        grouped_results[key]['total_score'] += result.score
-        grouped_results[key]['total_results'] += 1
+            grouped_results.append(grouped_result)
 
     # Calculate the percentage score for each group
-    for key, group in grouped_results.items():
+    for group in grouped_results:
         total_score = group['total_score']
         total_results = group['total_results']
         if total_results > 0:
             group['percentage_score'] = round((total_score / total_results) * 100)
 
-    # Convert the dictionary values to a list
-    grouped_results_list = grouped_results.values()
-
-    return render(request, 'quiz_results.html', {'grouped_results': grouped_results_list})
+    return render(request, 'quiz_results.html', {'grouped_results': grouped_results})
 
 def QuizView(request, quiz_pk):
     try:
